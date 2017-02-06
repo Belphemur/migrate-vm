@@ -319,15 +319,15 @@ sub transfer_vm {
 					}
 					$n++;
 				}
-        #print("HTTP Status: $http_status[1]\n");
+        print("HTTP Status: $http_status[1]\n");
         goto KILLTASKS if $http_status[1] ne "200";
       } else {
-        #print "ssock not connected\n";
+        print "ssock not connected\n";
         $ssock->close() if $ssock;
         goto KILLTASKS;
       }
     } else {
-      #print "ssock connection timed out $! $self->{host}\n";
+      print "ssock connection timed out $! $self->{host}\n";
       goto KILLTASKS;
     }
 
@@ -344,10 +344,10 @@ sub transfer_vm {
   }
 
   # create the import task on destination server
-  my $dtask = $d->Xen::API::task::create("import_$vmname","Import VM $vmname");
+  my $dtask = $d->Xen::API::task::create("import_$vmname","Import VM $vmname") || die 'Task not created';
 
   if ($useSsl) {
-    $dsock = $dsock = IO::Socket::SSL->new(PeerHost => $d->{host}, PeerPort => 'https', Proto => 'tcp', Blocking => 1, Timeout  => 10, SSL_verify_mode => SSL_VERIFY_NONE);
+    $dsock = IO::Socket::SSL->new(PeerHost => $d->{host}, PeerPort => 'https', Proto => 'tcp', Blocking => 1, Timeout  => 10, SSL_verify_mode => SSL_VERIFY_NONE);
   } else {
     $dsock = IO::Socket::INET->new(PeerAddr => $d->{host}, PeerPort => 80, Proto => 'tcp', Blocking => 1, Timeout => 10)
   }
@@ -379,7 +379,7 @@ sub transfer_vm {
 					}
 					$n++;
 				}
-        #print("HTTP Status: $http_status[1]\n");
+        print("HTTP Status: $http_status[1]\n");
         goto KILLTASKS if $http_status[1] ne "200";
         my $x = 0;  ## For progress
         my $y = 0;  ## For progress
